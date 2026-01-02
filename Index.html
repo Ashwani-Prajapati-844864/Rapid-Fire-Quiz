@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+  <h1>Rapid Fire Quiz</h1>
+  <nav>
+    <button onclick="showHome()">Home</button>
+    <button onclick="showAbout()">About Me</button>
+  </nav>
+</header>
+
+<!-- HOME -->
+<section id="home">
+  <div class="card">
+    <h2>Let's Start Quiz 🚀</h2>
+    <p>Test your knowledge with 10 MCQs</p>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="hidden">
+  <div class="quiz-box">
+    <h3 id="question"></h3>
+    <div id="options"></div>
+    <p id="progress"></p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="hidden">
+  <div class="card">
+    <h2>About Me</h2>
+    <p>
+      Hi, I am a learner at <b>CodeYogi</b>.
+    </p>
+    <p>
+      Main 12th class ka student hoon.
+Main Janta Inter College mein padhai karta hoon aur Uttar Pradesh ke Ghaziabad district mein rehta hoon.
+Aur main CodeYogi se programming seekh raha hoon.
+Main apni skills ko improve karke future mein technology ke field mein aage badhna chahta hoon.
+</p>
+  </div>
+</section>
+ <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  min-height: 100vh;
+}
+
+header {
+  background: #3f51b5;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav button {
+  background: white;
+  border: none;
+  padding: 8px 14px;
+  margin-left: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+section {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20%;
+}
+
+.hidden {
+  display: none;
+}
+
+.card,
+.quiz-box {
+  background: white;
+  max-width: 420px;
+  width: 100%;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.start-btn {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.option {
+  display: block;
+  margin: 10px 0;
+  padding: 12px;
+  border: none;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.option.correct {
+  background: #4caf50;
+  color: white;
+}
+
+.option.wrong {
+  background: #f44336;
+  color: white;
+}
+
+@media (max-width: 500px) {
+  header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  section {
+    margin: 0px;
+  }
+}
+ </style>
+</body>
+<script>
+    const questions = [
+  {
+    q: "Which is the largest planet in our solar system?",
+    options: ["Earth", "Mars", "Jupiter", "Saturn"],
+    ans: 2,
+  },
+  {
+    q: "Who discovered the law of gravity?",
+    options: ["Galileo", "Einstein", "Newton", "Tesla"],
+    ans: 2,
+  },
+  {
+    q: "What is the chemical symbol for Gold?",
+    options: ["Ag", "Au", "Go", "Gd"],
+    ans: 1,
+  },
+  {
+    q: "Which organ pumps blood?",
+    options: ["Liver", "Kidney", "Heart", "Lungs"],
+    ans: 2,
+  },
+  {
+    q: "Square root of 144?",
+    options: ["10", "11", "12", "14"],
+    ans: 2,
+  },
+  {
+    q: "India got independence in?",
+    options: ["1945", "1946", "1947", "1950"],
+    ans: 2,
+  },
+  {
+    q: "Who painted Mona Lisa?",
+    options: ["Van Gogh", "Leonardo da Vinci", "Picasso", "Michelangelo"],
+    ans: 1,
+  },
+  {
+    q: "Currency of Japan?",
+    options: ["Won", "Yen", "Yuan", "Rupee"],
+    ans: 1,
+  },
+  {
+    q: "Most abundant gas in atmosphere?",
+    options: ["Oxygen", "Nitrogen", "CO2", "Hydrogen"],
+    ans: 1,
+  },
+  {
+    q: "Author of Harry Potter?",
+    options: ["Tolkien", "J.K. Rowling", "Martin", "Collins"],
+    ans: 1,
+  },
+];
+
+let index = 0;
+let score = 0;
+
+const home = document.getElementById("home");
+const quiz = document.getElementById("quiz");
+const about = document.getElementById("about");
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const progressEl = document.getElementById("progress");
+
+function showHome() {
+  home.classList.remove("hidden");
+  quiz.classList.add("hidden");
+  about.classList.add("hidden");
+}
+
+function showAbout() {
+  home.classList.add("hidden");
+  quiz.classList.add("hidden");
+  about.classList.remove("hidden");
+}
+
+function startQuiz() {
+  index = 0;
+  score = 0;
+  home.classList.add("hidden");
+  quiz.classList.remove("hidden");
+  loadQuestion();
+}
+
+function loadQuestion() {
+  let q = questions[index];
+  questionEl.innerText = q.q;
+  optionsEl.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    let btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.className = "option";
+    btn.onclick = () => checkAnswer(i, btn);
+    optionsEl.appendChild(btn);
+  });
+
+  progressEl.innerText = `Question ${index + 1} of 10 | Score: ${score}`;
+}
+
+function checkAnswer(i, btn) {
+  if (i === questions[index].ans) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+  }
+
+  setTimeout(() => {
+    index++;
+    if (index < questions.length) {
+      loadQuestion();
+    } else {
+      questionEl.innerText = `Quiz Completed 🎉 Your Score: ${score}/10`;
+      optionsEl.innerHTML = "";
+      progressEl.innerText = "";
+    }
+  }, 800);
+}
+</script>
+</html>
